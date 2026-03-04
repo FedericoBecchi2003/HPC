@@ -1,2 +1,3 @@
 # HPC
-Repisitory containg all the materials of HPC Unipr
+Repository containing all the materials of the HPC course at University of Parma
+
