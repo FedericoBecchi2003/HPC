@@ -1,0 +1,16 @@
+# cache
+.cache/
+cache/
+
+# ssh
+.ssh/
+
+# bash history/config
+.bash_history
+.bashrc
+.bash_profile
+
+# compressed files
+*.gz
+*.zip
+*.tar.gz

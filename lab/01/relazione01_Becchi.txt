@@ -1,0 +1,184 @@
+1) Descrivere l’installazione eseguita, incluso in sistema operativo e il tipo di
+GPU.
+
+Laptop Macbook Air M3
+eseguo il comando sw_vers:
+Architettura: Apple Silicon (ARM64)
+OS: macOS 26.3.1
+eseguo il comando system_profiler SPDisplaysDataType
+Apple M3 con GPU integrata (10-core)
+
+Questo PC utilizza un'architettura Apple silicon , strutturata così:
+8 Core CPU
+10 Core GPU
+16 Core IA
+La memoria è detta unificata tra CPU e GPU questo comporta che usano lo stesso insieme di memoria
+inoltre questa utilizza un set di API Metal , nel mio portatile versione 4.
+
+Decido di utilizzare l'architettura con due nodi (Docker).
+Ho dovuto modificare l'architettura utilizzata dai due nodi e il percorso dei volumi.
+    platform: linux/amd64 # per processori ARM con emulatore Rosetta 2  
+    volumes:
+      - /Users/federicobecchi/Documents/HPC/lab/01:/root
+inoltre ho dovuto rimuovere la sezione deploy la cui conteneva istruzioni per caricare i driver NVIDIA:
+
+Avvio architettura
+docker compose up -d
+(base) federicobecchi@192 01 % docker compose up -d
+WARN[0000] No services to build                         
+[+] up 3/3
+ ✔ Network 01_default Created                                                                                                                       0.0s 
+ ✔ Container wn2      Created 
+Ora si configura l'accesso ssh da wn1 a wn2 in particolare si vuole evitare di mettere la password ad ogni connessione
+accesso ssh a wn1   
+(base) federicobecchi@192 01 % docker compose exec wn1 bash
+Successo
+Utilizzando i permessi in si da la propietà della cartella /root all'utente root
+root@wn1:~# chown root:root /root
+Ora si asseggnano i permessi a /root
+chmod 755 /root
+così root può scrivere e altri possono leggere/entrare
+
+Creazione chiavi SSH
+creazione chiavi con algoritmo RSA con nessuna passphrase e viene salvata dentro ~/.ssh/id_rsa
+ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
+in output si ottengo due file:
+id_rsa → chiave privata
+id_rsa.pub → chiave pubblica
+
+abilitazione accesso automatico
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keyss
+
+protezione alla cartella delle chiavi
+chmod 600 ~/.ssh/authorized_keys
+solo il propietario può leggere e scrivere
+gli altri user l'acceso è proibito
+
+wn1 si autentica su wn2 tramite una chiave crittografica RSA invece che con password, permettendo comunicazione automatica tra nodi (fondamentale per MPI).
+
+Esecuzione Test PC
+2) Con i comandi di test raccogliere informazioni sulla configurazione del
+nodo di calcolo:
+root@wn2:~# sh deviceQuery/CPU/lsCPU.sh
+l'output è molto lungo quindi do un riassunto integrato anche dalle informazioni inziali , tuttavia queste sono filtratre dalla configurazione di docker verso la CPU fisica , presumo che ci sia una vista impostata , lo deduco dalla mancanza della dimensione della cache e della frequenza della CPU.
+Architettura: x86_64(interessante)
+Core: 8
+Socket: 1
+Thread per core: 1
+Istruzioni SIMD: ASIMD + AES + SHA extensions
+Supporto crittografico hardware: sì
+
+root@wn2:~# sh deviceQuery/GPU/deviceQuery.sh
+wn2
+deviceQuery/GPU/deviceQuery.sh: 6: nvidia-smi: not found
+deviceQuery/GPU/deviceQuery.sh: 7: ./deviceQuery: Permission denied
+
+Su questo pc non è presente una scheda video Nvidia
+
+utilizzo questo comando 
+(base) federicobecchi@192 ~ % system_profiler SPDisplaysDataType
+Graphics/Displays:
+    Apple M3:
+      Chipset Model: Apple M3
+      Type: GPU
+      Bus: Built-In
+      Total Number of Cores: 10
+      Vendor: Apple (0x106b)
+      Metal Support: Metal 4
+      Displays:
+        Color LCD:
+          Display Type: Built-in Liquid Retina Display
+          Resolution: 2560 x 1664 Retina
+          Main Display: Yes
+          Mirror: Off
+          Online: Yes
+          Automatically Adjust Brightness: Yes
+          Connection Type: Internal
+ioreg -l | grep -i gpu #questo per un report approfondito
+system_profiler SPMetalDataType # per ottenere informazioni su Metal (Equivalente di CUDA in architettura NVIDIA)
+
+3) Determinare le prestazioni di picco in Flops:
+Macbook air m3
+1 core CPU: frequenza massima x 2 (FMA)* x N (SIMD)**
+Step 1: FLOPS per core
+frequenza ~ 4.06 GHz (valore tipico boost M3) stima presa da internet , l'informazione tecnica non l'ho trovata accessibile.
+SIMD ~ 8 (single precision)
+N = 2
+La CPU Apple M3 supporta istruzioni SIMD ASIMD (NEON) a 128 bit; utilizzando dati in doppia precisione (64 bit) il fattore SIMD risulta N=2.
+FMA = 2
+FLOPS/core=f×2×SIMD
+= 16.25 GFLOPS
+I nodi MPI sono implementati tramite container Docker (wn1, wn2) eseguiti sul medesimo MacBook Air M3. Essi rappresentano nodi logici del cluster, ma condividono lo stesso hardware fisico; pertanto le prestazioni teoriche non vengono moltiplicate per il numero di container.
+1 nodo CPU: prestazioni di 1 core x numero di core fisici (no hyper-threading)
+= Flops(core) * 8 = 129.92 GFLOPS
+GPU clock tipico stimato: ~1.3 GHz
+1 core GPU: frequenza massima x 2 (FMA) = 2.6 GHz
+1 GPU: prestazioni di 1 core x numero di core = 2.6 * 10 = 26 GHz
+La GPU Apple M3 non è basata su architettura CUDA e non dispone di CUDA cores. Le prestazioni sono quindi stimate utilizzando il modello semplificato basato su frequenza di clock e numero di core, secondo la formula fornita dal corso. La programmazione GPU avviene tramite API Metal.
+
+Test Eseguiti sul Cluster di Ateneo
+2) Con i comandi di test raccogliere informazioni sulla configurazione del
+nodo di calcolo:
+CPU: numero di core, frequenza di lavoro, dati su memoria e cache,
+presenza di istruzioni SIMD (AVX, AVX2, AVX512, ..) e FMA.
+[federico.becchi@ui01 deviceQuery]$ sh CPU/lsCPU.slurm
+ui01.hpc.unipr.it
+Architecture:          x86_64
+CPU op-mode(s):        32-bit, 64-bit
+Byte Order:            Little Endian
+CPU(s):                4
+On-line CPU(s) list:   0-3
+Thread(s) per core:    1
+Core(s) per socket:    2
+Socket(s):             2
+NUMA node(s):          1
+Vendor ID:             GenuineIntel
+CPU family:            6
+Model:                 85
+Model name:            Intel(R) Xeon(R) Gold 6238R CPU @ 2.20GHz
+Stepping:              7
+CPU MHz:               2194.843
+BogoMIPS:              4389.68
+Hypervisor vendor:     VMware
+Virtualization type:   full
+L1d cache:             32K
+L1i cache:             32K
+L2 cache:              1024K
+L3 cache:              39424K
+NUMA node0 CPU(s):     0-3
+Flags:                 fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon nopl xtopology tsc_reliable nonstop_tsc eagerfpu pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch invpcid_single ssbd ibrs ibpb stibp ibrs_enhanced fsgsbase tsc_adjust bmi1 avx2 smep bmi2 invpcid avx512f avx512dq rdseed adx smap clflushopt clwb avx512cd avx512bw avx512vl xsaveopt xsavec arat pku ospke md_clear spec_ctrl intel_stibp flush_l1d arch_capabilities
+
+
+GPU: Cuda driver version, dimensione memoria globale, memoria shared,
+numero di cuda-core, max clock rate.
+[federico.becchi@ui01 deviceQuery]$ sh GPU/deviceQuery.slurm 
+module
+ui01.hpc.unipr.it
+GPU/deviceQuery.slurm: line 27: nvidia-smi: command not found
+GPU/deviceQuery.slurm: line 28: ./deviceQuery: No such file or directory Problema: il comando nvidia-smi non è trovato.
+
+3) Determinare le prestazioni di picco in Flops:
+1 core CPU: frequenza massima x 2 (FMA)* x N (SIMD)**
+l nodo analizzato è un Intel Xeon Gold 6238R con frequenza di 2.20 GHz e supporto alle istruzioni AVX, AVX2 e AVX512.
+
+Il set SIMD massimo disponibile è AVX512, corrispondente a:
+
+N=16
+✔️ Prestazioni per core:
+FLOPS
+core
+	​
+
+=2.20×10
+9
+×2×16=70.4 GFLOPS
+✔️ Prestazioni nodo:
+FLOPS
+CPU
+	
+=70.4×4=281.6 GFLOPS
+
+1 nodo CPU: prestazioni di 1 core x numero di core fisici (no hyper-threading)
+FLOPSCPU​=70.4×4=281.6 GFLOPS
+1 core GPU: frequenza massima x 2 (FMA)
+1 GPU: prestazioni di 1 core x numero di core
