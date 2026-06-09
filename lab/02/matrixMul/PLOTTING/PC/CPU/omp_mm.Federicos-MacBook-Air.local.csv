@@ -1,0 +1,8 @@
+#N  gflop  time(s)  GFLOPS   Hostname   Comment nthreads 
+ 1024,  2.15,  0.94,   2.27, Federicos-MacBook-Air.local, Federicos-MacBook-Air.local-1,  1
+#N  gflop  time(s)  GFLOPS   Hostname   Comment nthreads 
+ 1024,  2.15,  0.47,   4.53, Federicos-MacBook-Air.local, Federicos-MacBook-Air.local-2,  2
+#N  gflop  time(s)  GFLOPS   Hostname   Comment nthreads 
+ 1024,  2.15,  0.26,   8.29, Federicos-MacBook-Air.local, Federicos-MacBook-Air.local-4,  4
+#N  gflop  time(s)  GFLOPS   Hostname   Comment nthreads 
+ 1024,  2.15,  0.16,   13.49, Federicos-MacBook-Air.local, Federicos-MacBook-Air.local-8,  8

@@ -1,0 +1,3 @@
+
+p, tempo, GFLOPs, Hostname, COMMENT
+1024, 2147483648, 1.006, 2135.34, GPU Device 0 (Pascal cc6.0), CUDA Kernel - Result PASS

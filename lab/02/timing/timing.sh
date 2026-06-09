@@ -1,0 +1,5 @@
+#!/bin/sh
+
+gcc timing.c -o timing -O2 
+
+./timing > timing_pc.csv

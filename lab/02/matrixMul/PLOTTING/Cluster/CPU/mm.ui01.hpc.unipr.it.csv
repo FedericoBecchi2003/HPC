@@ -1,0 +1,16 @@
+# N  gflop  tempo(s)  GFLOP/s  Hostname   Comment  
+1024, 2.15,  1.42,   1.52,  ui01.hpc.unipr.it, gcc-ui01.hpc.unipr.it 
+# N  gflop  tempo(s)  GFLOP/s  Hostname   Comment  
+1024, 2.15,  0.10,   22.13,  ui01.hpc.unipr.it, gcc+gsl-ui01.hpc.unipr.it 
+#N  gflop  time(s)  GFLOPS   Hostname   Comment nthreads 
+ 1024,  2.15,  0.38,   5.72, ui01.hpc.unipr.it, gcc+omp-ui01.hpc.unipr.it,  4
+# N  gflop  tempo(s)  GFLOP/s  Hostname   Comment  
+1024, 2.15,  1.42,   1.52,  ui01.hpc.unipr.it, icc-ui01.hpc.unipr.it 
+# N  gflop  tempo(s)  GFLOP/s  Hostname   Comment  
+1024, 2.15,  0.10,   22.10,  ui01.hpc.unipr.it, icc+gsl-ui01.hpc.unipr.it 
+#N  gflop  time(s)  GFLOPS   Hostname   Comment nthreads 
+ 1024,  2.15,  0.06,   36.07, ui01.hpc.unipr.it, icc+omp-ui01.hpc.unipr.it,  4
+# N  gflop  tempo(s)  GFLOP/s  Hostname   Comment  
+1024, 2.15,  0.18,   12.20,  ui01.hpc.unipr.it, icc+avx-ui01.hpc.unipr.it 
+# N  gflop  tempo(s)  GFLOP/s  Hostname   Comment  
+1024, 2.15,  0.10,   22.19,  ui01.hpc.unipr.it, icc+avx+gsl-ui01.hpc.unipr.it 
