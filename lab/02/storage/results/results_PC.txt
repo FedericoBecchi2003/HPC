@@ -8,4 +8,4 @@ Write to file:
 Read from file:
 512+0 records in
 512+0 records out
-536870912 bytes transferred in 0.149935 secs (3580691046 bytes/sec)
+536870912 bytes transferred in 0.149935 secs (3580691046 bytes/sec)„
