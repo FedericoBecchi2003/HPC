@@ -39,7 +39,7 @@ int main( int argc, char *argv[])
 
     usleep (s);  // Simulazione codice non paralellizzabile
 
-   clock_gettime( CLOCK_REALTIME  , &tb); ////////////////////////////////
+    clock_gettime( CLOCK_REALTIME  , &tb); ////////////////////////////////
 
 //    sum= f1(n); 
     sum= f2(n); 

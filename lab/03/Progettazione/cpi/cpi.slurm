@@ -10,7 +10,7 @@
 
 N=100000000
 
-gcc cpi.c    -O2 -o cpi  -lm 
+gcc cpi.c    -O2 -o cpi  -lm #opzione lm è per colleare la libreria matematica libm al programma
 ./cpi -n $N 
 
 gcc cpi+amdahl.c  -O2 -o cpi+amdahl -lm 
