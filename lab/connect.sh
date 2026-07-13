@@ -1,1 +1,1 @@
-ssh federico.becchi@login.hpc.unipr.it  
+ssh -X federico.becchi@login.hpc.unipr.it

@@ -1,8 +1,0 @@
-#N  gflop  time(s)  GFLOPS   Hostname   Comment nthreads 
- 1024,  2.15,  1.43,   1.50, ui01.hpc.unipr.it, ui01.hpc.unipr.it-1,  1
-#N  gflop  time(s)  GFLOPS   Hostname   Comment nthreads 
- 1024,  2.15,  0.72,   2.99, ui01.hpc.unipr.it, ui01.hpc.unipr.it-2,  2
-#N  gflop  time(s)  GFLOPS   Hostname   Comment nthreads 
- 1024,  2.15,  0.36,   5.89, ui01.hpc.unipr.it, ui01.hpc.unipr.it-4,  4
-#N  gflop  time(s)  GFLOPS   Hostname   Comment nthreads 
- 1024,  2.15,  0.34,   6.35, ui01.hpc.unipr.it, ui01.hpc.unipr.it-8,  8

@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np  # Imported for positioning
 
-df = pd.read_csv("timing_pc.csv", comment="#", sep="\\s+")
+df = pd.read_csv("timing_cluster.csv", comment="#", sep="\\s+")
 
 print(df.timer)
 
@@ -12,7 +12,7 @@ print(df.timer)
 x_positions = np.arange(len(df.timer))
 
 # 2. Plot using the numeric positions
-plt.title('Performance - "Timing PC" - Federico Becchi  05/06/2026')
+plt.title('Performance - "Timing Cluster" - Federico Becchi  05/06/2026')
 plt.ylabel('seconds')
 plt.bar(x_positions, df.time)
 
@@ -20,4 +20,4 @@ plt.bar(x_positions, df.time)
 plt.xticks(x_positions, df.timer)
 
 # plt.xticks(rotation=45) # Uncomment if names overlap
-plt.savefig('timing.png')
+plt.savefig('timing_Cluster.png')

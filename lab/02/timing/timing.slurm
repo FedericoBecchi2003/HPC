@@ -12,4 +12,3 @@
 gcc -O2 timing.c -o timing
 
 ./timing > timing.csv
-

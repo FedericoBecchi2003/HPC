@@ -16,7 +16,8 @@ env | grep SLURM
 
 # da eseguire su login per visualizzare
 # i nodi disponibili nella partizione cpu_guest:
-# hpc-sinfo-cpu --partition=cpu_guest
+
+hpc-sinfo-cpu --partition=cpu_guest
 
 
 # informazioni sul nodo di esecuzione
@@ -25,7 +26,7 @@ hostname
 lscpu
 
 # info piu' dettagliate sulla CPU:
-#cat /proc/cpuinfo
+cat /proc/cpuinfo
 
 #dettaglio archtettura  NUMA (apt install numactl):
-#numactl --hardware
+numactl --hardware

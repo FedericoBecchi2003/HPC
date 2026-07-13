@@ -1,0 +1,4 @@
+# N  gflop  tempo(s)  GFLOP/s  Hostname   Comment  
+1024, 2.15,  0.66,   3.24,  Federicos-MacBook-Air.local, gcc-Federicos-MacBook-Air.local 
+# N  gflop  tempo(s)  GFLOP/s  Hostname   Comment  
+1024, 2.15,  0.32,   6.66,  Federicos-MacBook-Air.local, gcc+gsl-Federicos-MacBook-Air.local 

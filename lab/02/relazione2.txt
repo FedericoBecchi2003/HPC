@@ -1,0 +1,118 @@
+Obbiettivo di questo relazione è eseguire programmi di benchmark e visualizzarne i risultati
+
+Timing
+Obbiettivo di timing.c è quello di calcolare il tempo di esecuzione e il tempo di CPU
+
+Risultati PC
+
+#!/bin/sh
+
+gcc timing.c -o timing -O2 
+
+./timing > timing_pc.csv
+
+foto
+
+Risultati Cluster
+
+Matrix Mul cosa fa
+
+Obbiettivo è misurare le performance espresse in FLOP/S della moltiplicazione tra due matrici
+il numero di operazioni FP è flops = 2n^3 con n , la lunghezza del lato delle matrici quadrate(n*n)
+
+mm.c
+Due modalità di esecuzione
+naive: tripla loop naive di for
+-g opzione gls_blas_sgemm
+
+cosa fa omp_mm.c
+versione parallezziata di mm.c usando openMP
+la parallezzioni su più thread avviene sia per la moltiplicazione e per inizializzazione
+
+CPU
+
+mm.slurm 
+Compila mm.c con gcc e con Intel, con alcune opzioni di
+compilazione, ed esegue sia Naive che GS
+
+omp_mm_scaling.slurm
+
+esegue open_mm.c con 1024(0 2048) come n(lato di una matrice) e 1,2,4,8 thead
+
+GPU
+
+matrixMul.slurm
+
+esegue il benchmark della moltiplicazione matriciale sulla HPY
+con dimensione matrice 1024
+
+valori csv_prima_del convertimento
+Performance= 2132.57 GFlop/s, Time= 1.007 msec, Size= 2147483648 Ops, WorkgroupSize= 1024 threads/block
+valori csv_dopo convertimento
+1024, 2.14748, 0.001007, 2132.57, "", ""
+PLOTTING
+
+Band-latency
+
+Band
+band1: bandwidth con 2 task sullo stesso nod
+band2: bandwidth con 1 task per nodo
+
+latency
+lat1: latenza intra-nodo
+lat2: latenza inter-nodo
+
+risultati dentro band e lat 
+
+Disktest
+
+PC benchmark usando dd 
+scrittura di 512 MB in 512 Blocchi
+lettura dello stesso file appena scritto
+
+results PC
+Working directory: /Users/federicobecchi/Documents/HPC/lab/02/storage
+Free space: /dev/disk3s5   460Gi   341Gi    95Gi    79%    2.5M  1.0G    0%   /System/Volumes/Data
+Write to file:
+512+0 records in
+512+0 records out
+536870912 bytes transferred in 0.557984 secs (962161840 bytes/sec)
+
+Read from file:
+512+0 records in
+512+0 records out
+536870912 bytes transferred in 0.149935 secs (3580691046 bytes/sec)„
+
+Cluster // stesso test di prima ma eseguito su $HOME , $SCRATCH, $ARCHIVE
+
+results Cluster
+/var/spool/slurm/slurmd/job2485102/slurm_script: line 2: BATCH: command not found
+####################################
+Running in: /hpc/home/federico.becchi
+---- disktest output ----
+Write to file:
+2048+0 records in
+2048+0 records out
+2147483648 bytes (2.1 GB) copied, 7.06106 s, 304 MB/s
+
+Read from file:
+2048+0 records in
+2048+0 records out
+2147483648 bytes (2.1 GB) copied, 0.631048 s, 3.4 GB/s
+------------------------
+####################################
+Running in: /hpc/scratch/federico.becchi
+---- disktest output ----
+Write to file:
+2048+0 records in
+2048+0 records out
+2147483648 bytes (2.1 GB) copied, 2.42872 s, 884 MB/s
+
+Read from file:
+2048+0 records in
+2048+0 records out
+2147483648 bytes (2.1 GB) copied, 0.856719 s, 2.5 GB/s
+------------------------
+ARCHIVE not defined, skipping
+####################################
+JOB FINISHED
