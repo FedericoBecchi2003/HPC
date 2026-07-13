@@ -1,0 +1,10 @@
+4096, 4096, 500, 19.656, 14.778 
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  Ts/call  Ts/call  name    
+ 75.19     14.75    14.75                             Jacobi_Iterator_CPU
+ 24.23     19.51     4.75                             Init_center
+  0.56     19.62     0.11                             copy_cols
+  0.51     19.72     0.10                             print_colormap

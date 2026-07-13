@@ -1,0 +1,4 @@
+#Inter       error       time         hostname 
+ 100000000,  1.04760645e-12,  1.01459, wn23 
+#Inter       error     tp       tnp     tp1+tnp        hostname 
+ 100000000,  6.33271213e-13,  0.55609,  0.10016, 0.65625, wn23 
