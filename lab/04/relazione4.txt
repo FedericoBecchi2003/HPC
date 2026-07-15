@@ -26,49 +26,57 @@ Ambiente HPC (OS)
 [federico.becchi@ui01 ~]$ cat /etc/system-release
 CentOS Linux release 7.9.2009 (Core)
 
+Relazione 1: 
 I risultati per CPU e GPU si trovano nella relazione 1
 
-MatrixMul
-CPU
+Relazione 2
 
-cosa fa mm.sh
 
-N=1024
-#N=2048
-
-OPT="-O2"
-#OPT="-O3"
-
-HOSTNAME=$(hostname)
-FILENAME=mm.$HOSTNAME.csv
-
-gcc  $OPT -o mm mm.c -I/opt/homebrew/opt/gsl/include -L/opt/homebrew/opt/gsl/lib -lgsl -lgslcblas
-
-./mm    -n $N -c gcc-$HOSTNAME        > $FILENAME    # gcc       
-./mm -g -n $N -c gcc+gsl-$HOSTNAME    >> $FILENAME   # gcc + gsl
-
-lab/04/matrimul_png
+lab/04/MatrixMul/matrimul.png
 
 Considerazioni
 
-
-GPU
-
-Il confronto non è possibile poiche , il mio pc non possiedere una scheda video NVIDIA
+Ci aspettano risultami migliori con le ottimizzazioni , 
+la versione naive non utilizza nessuna parallellizazione o istruzione SIMD ( a parità di dimensione del problema)
+Inoltre con la GPU si ottengono risultati molto più altri rispetto alle singole CPU
+Questo viene spiegato dal fatto che le GPU hanno migliaia di core (CUDA cores ) e il problema di moltiplicazione
+matriciale è adattato  a questa architettura poichè il calcolo della matrice risultante è indipendente dagli altri
+Il confronto con la GPU nel PC locale non è possibile poichè non dispone di una GPU nvidia , è stato quindi necessario usare l'HPC d'ateneo
 
 
 Network
 
-Spiegare cosa fa band_lat.sh
+band_lat.sh
+
+ho aggiunto queste due righe:
+
+# SSH rifiuta la connessione (mpirun usa SSH per lanciare i demoni remoti)
+# con "Host key verification failed."
+docker compose exec wn1 sh -c 'mkdir -p ~/.ssh && ssh-keyscan -H wn1 wn2 >> ~/.ssh/known_hosts 2>/dev/null'
+docker compose exec wn2 sh -c 'mkdir -p ~/.ssh && ssh-keyscan -H wn1 wn2 >> ~/.ssh/known_hosts 2>/dev/null'
+
+registrazione delle chiavi ssh nei rispettivi known_hosts altrimenti mpirun fallisce
+
+esegue un test di bandwith attraverso mpirun
+
+intra-nodo e inter-nodo
 
 risultati pc
 lab/02/network/results/PC/band.png
-lab/02/network/results/PC/band.lat
+lab/02/network/results/PC/lat.png
 
 risultati Cluster
 
+viene eseguito band_lat.slurm sul cluster
+
+sbatch band_lat.slum
+
 lab/02/network/results/Cluster/band.png
-lab/02/network/results/Cluster/band.lat
+lab/02/network/results/Cluster/lat.png
 
 
 Considerazioni
+
+Sul cluster i test inter-nodo vengono eseguiti attraverso Omnipath quindi ci si aspettano i risultati di 
+latenza e larghezza di banda più veloci rispetto al PC , in cui la rete cluster viene simulata attraverso due container docker
+Rispettavamente i test di banda e latenza sono equivalenti.
