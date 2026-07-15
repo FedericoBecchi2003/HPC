@@ -8,6 +8,12 @@ mkdir -p "$OUT"
 
 echo "Avvio dei test HPC nei container Docker..."
 
+# Aggiungiamo le host key di wn1/wn2 ai rispettivi known_hosts, altrimenti
+# SSH rifiuta la connessione (mpirun usa SSH per lanciare i demoni remoti)
+# con "Host key verification failed."
+docker compose exec wn1 sh -c 'mkdir -p ~/.ssh && ssh-keyscan -H wn1 wn2 >> ~/.ssh/known_hosts 2>/dev/null'
+docker compose exec wn2 sh -c 'mkdir -p ~/.ssh && ssh-keyscan -H wn1 wn2 >> ~/.ssh/known_hosts 2>/dev/null'
+
 # Lanciamo mpirun DENTRO il container wn1 (usando il suo mpirun nativo),
 # ma pilotandolo comodamente dal terminale del tuo Mac.
 docker compose exec -w /root/02/network wn1 mpirun --allow-run-as-root -npernode 2 -np 2 -host wn1:4       ./mpi_bandwidth 2> "$OUT/band1-$HOSTNAME.csv"

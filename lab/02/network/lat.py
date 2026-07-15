@@ -24,7 +24,6 @@ plt.bar("2 nodes HPC", lat4.avgT,    label='wn20-wn21')
 
 
 
-
 plt.legend(loc='upper left')
 
 plt.savefig('lat.png')

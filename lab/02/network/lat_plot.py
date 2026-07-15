@@ -19,4 +19,4 @@ for bar, val in zip(bars, values):
              f'{val:.2f} µs', ha='center', va='bottom', fontsize=11)
 plt.ylim(0, max(values) * 1.4)
 plt.tight_layout()
-plt.savefig('results/Cluster/lat.png', dpi=150)
+plt.savefig('results/PC/lat.png', dpi=150)

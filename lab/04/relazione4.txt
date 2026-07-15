@@ -1,0 +1,74 @@
+Federico Becchi 30-04-2026
+
+Ho eseguito l'installazione del client VPN FORTINET senza alcun problema
+
+Come client SSH utilizzo la shell zsh di MAC OS
+(base) federicobecchi@Federicos-MacBook-Air Downloads % echo $SHELL
+/bin/zsh
+
+Autenticazione tra tutti i nodi del cluster
+Eseguo i seguenti comandi sul cluster
+Si creano una coppia di chiavi SSH con algoritmo RSA senza password  , salvate in ~/.ssh/
+ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+chmod 0600 ~/.ssh/authorized_keys (cambio di permessi solo il propietario può leggere e scrivere)
+User 1100 (4200) 
+4 r-Read
+2 w-Write
+1 x - Execute
+4+2 = 6
+Group 0
+Other 0
+
+esito positivo
+
+Ambiente HPC (OS)
+[federico.becchi@ui01 ~]$ cat /etc/system-release
+CentOS Linux release 7.9.2009 (Core)
+
+I risultati per CPU e GPU si trovano nella relazione 1
+
+MatrixMul
+CPU
+
+cosa fa mm.sh
+
+N=1024
+#N=2048
+
+OPT="-O2"
+#OPT="-O3"
+
+HOSTNAME=$(hostname)
+FILENAME=mm.$HOSTNAME.csv
+
+gcc  $OPT -o mm mm.c -I/opt/homebrew/opt/gsl/include -L/opt/homebrew/opt/gsl/lib -lgsl -lgslcblas
+
+./mm    -n $N -c gcc-$HOSTNAME        > $FILENAME    # gcc       
+./mm -g -n $N -c gcc+gsl-$HOSTNAME    >> $FILENAME   # gcc + gsl
+
+lab/04/matrimul_png
+
+Considerazioni
+
+
+GPU
+
+Il confronto non è possibile poiche , il mio pc non possiedere una scheda video NVIDIA
+
+
+Network
+
+Spiegare cosa fa band_lat.sh
+
+risultati pc
+lab/02/network/results/PC/band.png
+lab/02/network/results/PC/band.lat
+
+risultati Cluster
+
+lab/02/network/results/Cluster/band.png
+lab/02/network/results/Cluster/band.lat
+
+
+Considerazioni
