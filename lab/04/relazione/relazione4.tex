@@ -8,8 +8,10 @@
 \usepackage{xcolor}
 \usepackage{geometry}
 \usepackage{hyperref}
+\usepackage{float}
 
 \geometry{margin=2.5cm}
+\graphicspath{{../MatriMul/}{../Network/}}
 
 \lstset{
   basicstyle=\ttfamily\small,
@@ -26,6 +28,8 @@
 
 \maketitle
 
+\section{Setup}
+
 Ho eseguito l'installazione del client VPN FORTINET senza alcun problema.
 
 Come client SSH utilizzo la shell zsh di MAC OS
@@ -39,7 +43,7 @@ Come client SSH utilizzo la shell zsh di MAC OS
 
 Eseguo i seguenti comandi sul cluster.
 
-Si creano una coppia di chiavi SSH con algoritmo RSA senza password, salvate in \texttt{\textasciitilde/.ssh/}
+Si creano una coppia di chiavi SSH con algoritmo RSA senza password, salvate in \texttt{\~{}/.ssh/}
 
 \begin{lstlisting}
 ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
@@ -57,38 +61,39 @@ Group 0
 Other 0
 \end{lstlisting}
 
-esito positivo
+Esito positivo.
 
-\subsection*{Ambiente HPC (OS)}
+\section{Ambiente HPC (OS)}
 
 \begin{lstlisting}
 [federico.becchi@ui01 ~]$ cat /etc/system-release
 CentOS Linux release 7.9.2009 (Core)
 \end{lstlisting}
 
-\subsection*{Relazione 1}
+\section{Relazione 1}
 
 I risultati per CPU e GPU si trovano nella relazione 1.
 
-\subsection*{Relazione 2}
+\section{Relazione 2}
 
-\begin{figure}[h!]
+\begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth]{../MatriMul/matrixMul.png}
-  \caption{lab/04/MatrixMul/matrimul.png}
+  \includegraphics[width=0.7\textwidth]{matrixMul.png}
+  \caption{matrixMul.png}
 \end{figure}
 
 \subsection*{Considerazioni}
 
-Ci aspettiamo risultati migliori con le ottimizzazioni, la versione naive non utilizza nessuna parallelizzazione o istruzione SIMD (a parita' di dimensione del problema).
-
-Inoltre con la GPU si ottengono risultati molto piu' alti rispetto alle singole CPU. Questo viene spiegato dal fatto che le GPU hanno migliaia di core (CUDA cores) e il problema di moltiplicazione matriciale e' adattato a questa architettura poiche' il calcolo della matrice risultante e' indipendente dagli altri.
-
-Il confronto con la GPU nel PC locale non e' possibile poiche' non dispone di una GPU NVIDIA, e' stato quindi necessario usare l'HPC d'ateneo.
+Ci aspettano risultati migliori con le ottimizzazioni, la versione naive non utilizza nessuna parallelizzazione o istruzione SIMD (a parita' di dimensione del problema).
+Inoltre con la GPU si ottengono risultati molto piu' alti rispetto alle singole CPU.
+Questo viene spiegato dal fatto che le GPU hanno migliaia di core (CUDA cores) e il problema di moltiplicazione matriciale e' adattato a questa architettura poiche' il calcolo della matrice risultante e' indipendente dagli altri.
+Il confronto con la GPU nel PC locale non e' possibile poiche' non dispone di una GPU nvidia, e' stato quindi necessario usare l'HPC d'ateneo.
 
 \section{Network}
 
-\texttt{band\_lat.sh}
+\begin{lstlisting}
+[federico.becchi@ui01 ~]$ sh band_lat.sh
+\end{lstlisting}
 
 Ho aggiunto queste due righe:
 
@@ -99,46 +104,47 @@ docker compose exec wn1 sh -c 'mkdir -p ~/.ssh && ssh-keyscan -H wn1 wn2 >> ~/.s
 docker compose exec wn2 sh -c 'mkdir -p ~/.ssh && ssh-keyscan -H wn1 wn2 >> ~/.ssh/known_hosts 2>/dev/null'
 \end{lstlisting}
 
-Registrazione delle chiavi SSH nei rispettivi \texttt{known\_hosts} altrimenti \texttt{mpirun} fallisce.
+Registrazione delle chiavi ssh nei rispettivi \texttt{known\_hosts} altrimenti \texttt{mpirun} fallisce.
 
-Esegue un test di bandwidth attraverso \texttt{mpirun}, intra-nodo e inter-nodo.
+Esegue un test di bandwidth attraverso \texttt{mpirun}: intra-nodo e inter-nodo.
 
-\subsection*{risultati pc}
+\subsection*{Risultati PC}
 
-\begin{figure}[h!]
+\begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth]{../../02/network/results/results/PC/band.png}
-  \caption{lab/02/network/results/PC/band.png}
+  \includegraphics[width=0.7\textwidth]{PC/band.png}
+  \caption{Network/PC/band.png}
 \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth]{../../02/network/results/results/PC/lat.png}
-  \caption{lab/02/network/results/PC/lat.png}
+  \includegraphics[width=0.7\textwidth]{PC/lat.png}
+  \caption{Network/PC/lat.png}
 \end{figure}
 
-\subsection*{risultati Cluster}
+\subsection*{Risultati Cluster}
 
-Viene eseguito \texttt{band\_lat.slurm} sul cluster.
+Viene eseguito \texttt{band\_lat.slurm} sul cluster:
 
 \begin{lstlisting}
 sbatch band_lat.slurm
 \end{lstlisting}
 
-\begin{figure}[h!]
+\begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth]{../../02/network/results/results/Cluster/band.png}
-  \caption{lab/02/network/results/Cluster/band.png}
+  \includegraphics[width=0.7\textwidth]{Cluster/band.png}
+  \caption{Network/Cluster/band.png}
 \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth]{../../02/network/results/results/Cluster/lat.png}
-  \caption{lab/02/network/results/Cluster/lat.png}
+  \includegraphics[width=0.7\textwidth]{Cluster/lat.png}
+  \caption{Network/Cluster/lat.png}
 \end{figure}
 
 \subsection*{Considerazioni}
 
-Sul cluster i test inter-nodo vengono eseguiti attraverso Omnipath, quindi ci si aspettano i risultati di latenza e larghezza di banda piu' veloci rispetto al PC, in cui la rete cluster viene simulata attraverso due container Docker. Rispettivamente i test di banda e latenza sono equivalenti.
+Sul cluster i test inter-nodo vengono eseguiti attraverso Omnipath quindi ci si aspettano i risultati di latenza e larghezza di banda piu' veloci rispetto al PC, in cui la rete cluster viene simulata attraverso due container docker.
+Rispettivamente i test di banda e latenza sono equivalenti.
 
 \end{document}

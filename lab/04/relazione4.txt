@@ -46,7 +46,7 @@ Il confronto con la GPU nel PC locale non è possibile poichè non dispone di un
 
 Network
 
-band_lat.sh
+[federico.becchi@ui01 ~]$ sh band_lat.sh
 
 ho aggiunto queste due righe:
 
@@ -61,19 +61,17 @@ esegue un test di bandwith attraverso mpirun
 
 intra-nodo e inter-nodo
 
-risultati pc
-lab/02/network/results/PC/band.png
-lab/02/network/results/PC/lat.png
+Risultati pc
+lab/04/network/PC/band.png
+lab/04/network/PC/lat.png
 
-risultati Cluster
+Risultati Cluster
 
 viene eseguito band_lat.slurm sul cluster
-
 sbatch band_lat.slum
 
-lab/02/network/results/Cluster/band.png
-lab/02/network/results/Cluster/lat.png
-
+lab/04/network/Cluster/band.png
+lab/04/network/Cluster/lat.png
 
 Considerazioni
 
